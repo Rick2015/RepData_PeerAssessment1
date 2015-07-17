@@ -8,11 +8,16 @@ output:
 
 ## Loading and preprocessing the data
 
-
+```{r load_data, echo=TRUE}
+adata=read.csv(unzip("./activity.zip"),header=TRUE, sep=",")
+adata$date=as.Date(adata$date, "%Y-%m-%d")
+```
 
 ## What is mean total number of steps taken per day?
 
-
+```{r total_steps, echo=TRUE}
+totalsteps=group_by()
+```
 
 ## What is the average daily activity pattern?
 
