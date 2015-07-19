@@ -53,18 +53,22 @@ plot(rownames(mean_steps), mean_steps, type="l", xlab="5-min. intervals")
 
 2. Which 5-minute interval, contains the maximum number of steps?
 
+Answer: interval 835
 ```{r max_steps_interval, echo=TRUE}
 max_steps<-names(which(mean_steps==max(mean_steps)))
 plot(rownames(mean_steps), mean_steps, type="l", xlab="5-min. intervals")
 abline(v=as.numeric(max_steps<-names(which(mean_steps==max(mean_steps)))), col="red")
+max_steps
 ```
 
 ## Imputing missing values
 
 1. Total number of missing values in dataset.
 
+Answer: 2304 missing values
 ```{r rows_NA, echo=TRUE}
 rows_na<-sum(is.na(adata$steps))
+rows_na
 ```
 
 2. Devise strategy for filling in all of the missing values in the dataset with mean/median for that day or that interval.
