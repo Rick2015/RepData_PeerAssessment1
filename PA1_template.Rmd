@@ -30,7 +30,7 @@ library(ggplot2)
 ggplot(step_totals, aes(x=total)) + geom_histogram(binwidth = 3000)
 ```
 
-3. Calulae the mean and median of total number of steps taken per day.
+3. Calulate the mean and median of total number of steps taken per day.
 ```{r mean_and_median, echo=TRUE}
 mean_totalsteps<-mean(step_totals$total,na.rm=TRUE)
 mean_totalsteps
@@ -40,17 +40,67 @@ median_totalsteps
 
 ## What is the average daily activity pattern?
 
-1. Time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
- Note 2012 was a leap year with 366 days = 527040 minutes / 5 = 105408
- October 1st is Julian date 275 = 396000 minutes / 5 = 79200
+1. Time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis).
 
 ```{r time_series, echo=TRUE}
-
+mean_steps<-tapply(adata$steps, adata$interval, mean, na.rm = TRUE)
 ```
 
+2. Which 5-minute interval, contains the maximum number of steps?
+```{r max_steps_interval, echo=TRUE}
+max_steps<-names(which(mean_steps==max(mean_steps)))
+```
 
 ## Imputing missing values
 
+1. Total number of missing values in dataset.
+```{r rows_NA, echo=TRUE}
+rows_na<-sum(is.na(adata$steps))
+```
+2. Devise strategy for filling in all of the missing values in the dataset with mean/median for that day or that interval.
 
+NOTE: My strategy is to reuse the "mean_steps" list. First match NA rows in a copied dataset "new data" to  the "mean_steps" list using "is.na" on the "steps" column. Then use use the corresponding interval values "as.character" to select the correct mean value from the list that will be imputed into the new dataset.
+
+3. Create new dataset equal to original but with the missing data filled in.
+```{r fillin_NA, echo=TRUE}
+newdata<-adata
+newdata$steps[is.na(newdata$steps)]<-mean_steps[as.character(is.na(newdata$steps),3)]       
+```
+
+4. Histogram of the new dataset for total number of steps taken per day.
+
+```{r new_total_steps, echo=TRUE}
+new_day_group<-group_by(newdata, date)
+new_step_totals<-summarize(new_day_group, total=sum(steps))
+new_step_totals
+```
+```{r histogram_total, echo=TRUE }
+ggplot(new_step_totals, aes(x=total)) + geom_histogram(binwidth = 3000)
+```
+
+Calculate the new mean and median of total number of steps taken per day.
+```{r new_mean_and_median, echo=TRUE}
+new_mean_totalsteps<-mean(new_step_totals$total,na.rm=TRUE)
+new_mean_totalsteps
+new_median_totalsteps<-median(new_step_totals$total,na.rm=TRUE)
+new_median_totalsteps
+```
+The impact of imputing missing data with the mean values on the estimates of the total daily number of steps caused the median to shift up in value and match the mean. The imputing with additional values caused the frequency count of total daily number of steps to shift up across all the totals, making the median match the mean.
+```{r summary_of_medians, echo=TRUE}
+summary(median_totalsteps)
+summary(new_median_totalsteps)
+```
+
+No changes for the mean.
+```{r summary_of_medians, echo=TRUE}
+summary(mean_totalsteps)
+summary(new_mean_totalsteps)
+```
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+1. Add a new factor variable in the dataset with two levels of "weekday" and "weekend."
+
+```{r weekday_weekdend, echo=TRUE}
+
+```
