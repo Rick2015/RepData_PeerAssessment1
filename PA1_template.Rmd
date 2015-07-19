@@ -40,15 +40,18 @@ median_totalsteps
 
 ## What is the average daily activity pattern?
 
-1. Time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis).
+1. Time series plot of the 5-minute interval (x-axis) and the average (mean) number of steps taken, averaged across all days (y-axis).
 
 ```{r time_series, echo=TRUE}
 mean_steps<-tapply(adata$steps, adata$interval, mean, na.rm = TRUE)
+plot(rownames(mean_steps), mean_steps, type="l", xlab="5-min. intervals")
 ```
 
 2. Which 5-minute interval, contains the maximum number of steps?
 ```{r max_steps_interval, echo=TRUE}
 max_steps<-names(which(mean_steps==max(mean_steps)))
+plot(rownames(mean_steps), mean_steps, type="l", xlab="5-min. intervals")
+abline(v=as.numeric(max_steps<-names(which(mean_steps==max(mean_steps)))), col="red")
 ```
 
 ## Imputing missing values
@@ -99,8 +102,19 @@ summary(new_mean_totalsteps)
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-1. Add a new factor variable in the dataset with two levels of "weekday" and "weekend."
+1. Add a new factor variable in the new dataset with two levels of "weekday" and "weekend."
 
 ```{r weekday_weekdend, echo=TRUE}
+#newdata$weekday<-as.factor(ifelse(match(wday(newdata$date),2:6, nomatch=0), TRUE, FALSE))
+newdata$weekend<-as.factor(ifelse(match(wday(newdata$date),c(1,7), nomatch=0), "weekend", "weekday"))
+```
+
+2. Make a two panel plot with a time series plot (type="l") of 5-min. interval (x-axis) and the average (mean) number of steps taken. One panel for averages across weekdays and the other for averages across the weekend (y-axis).
+
+```{r new_timeseries, echo=TRUE}
+library(lattice)
+new_mean_steps<-tapply(newdata$steps, newdata$interval, mean, na.rm = TRUE)
+#xyplot(steps ~ interval | weekend, data=newdata, type="l", layout= c(1,2))
 
 ```
+
