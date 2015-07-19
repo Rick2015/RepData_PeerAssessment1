@@ -1,4 +1,9 @@
-# Reproducible Research: Peer Assessment 1
+---
+title: "Reproducible Research: Peer Assessment 1"
+output: 
+  html_document:
+    keep_md: true
+---
 
 
 ## Loading and preprocessing the data
@@ -18,22 +23,6 @@ adata$date=as.Date(adata$date, "%Y-%m-%d")
 
 ```r
 library(dplyr)
-```
-
-```
-## 
-## Attaching package: 'dplyr'
-## 
-## The following objects are masked from 'package:stats':
-## 
-##     filter, lag
-## 
-## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union
-```
-
-```r
 day_group<-group_by(adata, date)
 step_totals<-summarize(day_group, total=sum(steps))
 step_totals
@@ -64,7 +53,7 @@ library(ggplot2)
 ggplot(step_totals, aes(x=total)) + geom_histogram(binwidth = 3000)
 ```
 
-![](PA1_template_files/figure-html/histogram_total-1.png) 
+![plot of chunk histogram_total](figure/histogram_total-1.png) 
 
 3. Calulate the mean and median of total number of steps taken per day.
 
@@ -97,7 +86,7 @@ mean_steps<-tapply(adata$steps, adata$interval, mean, na.rm = TRUE)
 plot(rownames(mean_steps), mean_steps, type="l", xlab="5-min. intervals")
 ```
 
-![](PA1_template_files/figure-html/time_series-1.png) 
+![plot of chunk time_series](figure/time_series-1.png) 
 
 2. Which 5-minute interval, contains the maximum number of steps?
 
@@ -108,7 +97,7 @@ plot(rownames(mean_steps), mean_steps, type="l", xlab="5-min. intervals")
 abline(v=as.numeric(max_steps<-names(which(mean_steps==max(mean_steps)))), col="red")
 ```
 
-![](PA1_template_files/figure-html/max_steps_interval-1.png) 
+![plot of chunk max_steps_interval](figure/max_steps_interval-1.png) 
 
 ## Imputing missing values
 
@@ -167,7 +156,7 @@ new_step_totals
 ggplot(new_step_totals, aes(x=total)) + geom_histogram(binwidth = 3000)
 ```
 
-![](PA1_template_files/figure-html/new_histogram_total-1.png) 
+![plot of chunk new_histogram_total](figure/new_histogram_total-1.png) 
 
 Calculate the new mean and median of total number of steps taken per day.
 
@@ -257,5 +246,5 @@ rownames(df) <- NULL #reindex data frames
 xyplot(numberOfsteps ~ interval | day, data=df, type="l", layout= c(1,2))
 ```
 
-![](PA1_template_files/figure-html/new_timeseries-1.png) 
+![plot of chunk new_timeseries](figure/new_timeseries-1.png) 
 
