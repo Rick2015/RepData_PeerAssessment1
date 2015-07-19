@@ -105,7 +105,6 @@ summary(new_mean_totalsteps)
 1. Add a new factor variable in the new dataset with two levels of "weekday" and "weekend."
 
 ```{r weekday_weekdend, echo=TRUE}
-#newdata$weekday<-as.factor(ifelse(match(wday(newdata$date),2:6, nomatch=0), TRUE, FALSE))
 newdata$weekend<-as.factor(ifelse(match(wday(newdata$date),c(1,7), nomatch=0), "weekend", "weekday"))
 ```
 
@@ -114,7 +113,16 @@ newdata$weekend<-as.factor(ifelse(match(wday(newdata$date),c(1,7), nomatch=0), "
 ```{r new_timeseries, echo=TRUE}
 library(lattice)
 new_mean_steps<-tapply(newdata$steps, newdata$interval, mean, na.rm = TRUE)
-#xyplot(steps ~ interval | weekend, data=newdata, type="l", layout= c(1,2))
+wkday_mean_steps<-tapply(ndata.weekday$steps, ndata.weekday$interval, mean, na.rm = TRUE)
+wkend_mean_steps<-tapply(ndata.weekend$steps, ndata.weekend$interval, mean, na.rm = TRUE)
+df1 <- data.frame(matrix(unlist(wkend_mean_steps)),interval=names(wkend_mean_steps),day="weekend")
+names(df1)[1]<-"numberOfsteps"
+df2 <- data.frame(matrix(unlist(wkday_mean_steps)),interval=names(wkday_mean_steps),day="weekday")
+names(df2)[1]<-"numberOfsteps"
+df <- rbind(df1,df2) #combine new data frames
+df <- df[with(df, order(interval)), ] #order data frames
+rownames(df) <- NULL #reindex data frames
+xyplot(numberOfsteps ~ interval | day, data=df, type="l", layout= c(1,2))
 
 ```
 
